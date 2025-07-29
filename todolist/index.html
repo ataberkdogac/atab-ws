@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/assets/css/style.css" />
+    <script src="/assets/javasc/myscript.js"></script>
+  </head>
+  <body>
+    <div id="myModal" class="modal">
+      <div class="modal-content">
+        <input type="text" id="editInput" />
+        <span onclick="edit()" class="editAdd"> Edit</span>
+      </div>
+    </div>
+
+    <div class="header">
+      <input type="text" id="newInput" />
+
+      <span onclick="newTask()" class="addButton"> Ekle </span>
+    </div>
+
+    <ul id="myList">
+      <li>a</li>
+      <li>b</li>
+      <li>c</li>
+    </ul>
+
+    <script>
+      var innerList = document.getElementsByTagName("LI");
+      var closeButton = document.getElementsByClassName("closeButton");
+      var editButton = document.getElementsByClassName("editButton");
+      var divs = document.getElementsByTagName("div");
+
+      var len = innerList.length;
+
+      for (i = 0; i < len; i++) {
+        var span = document.createElement("SPAN");
+        span.className = "closeButton";
+        var x = document.createTextNode("X");
+        span.appendChild(x);
+        innerList[i].appendChild(span);
+
+        closeButton[i].onclick = function () {
+          var parentElem = this.parentElement;
+          parentElem.style.display = "none";
+        };
+      }
+
+      for (j = 0; j < len; j++) {
+        var spaed = document.createElement("span");
+        spaed.className = "editButton";
+        var ed = document.createTextNode("Edit");
+        spaed.appendChild(ed);
+        innerList[j].appendChild(spaed);
+
+        editButton[j].onclick = function () {
+          divs[0].style.display = "block";
+          var li = document.createElement("li")
+          var edited = document.getElementById("editInput").value;
+          li.append(edited);
+          innerList[j].innerHTML = li;
+        };
+      }
+
+      function edit() {
+        
+
+      }
+    </script>
+  </body>
+</html>
