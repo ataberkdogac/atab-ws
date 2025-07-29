@@ -4,14 +4,116 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="/assets/css/style.css" />
-    <script src="/assets/javasc/myscript.js"></script>
+    <style scoped>
+      body {
+        background-color: white;
+        margin: auto;
+        max-width: 1000px;
+      }
+
+      .header {
+        background-color: red;
+        color: white;
+        padding: 10px;
+        margin: 10px;
+        text-align: center;
+        display: flex;
+      }
+
+      .header input {
+        background-color: brown;
+        width: 75%;
+        float: left;
+        padding: 10px;
+      }
+
+      .addButton {
+        background-color: yellow;
+        color: black;
+        width: 25%;
+        padding: 10px;
+        float: left;
+        cursor: pointer;
+      }
+
+      .editButton {
+        background-color: blueviolet;
+        float: inline-end;
+        cursor: pointer;
+        padding: 10px;
+        margin-left: 10px;
+        margin-right: 10px;
+      }
+
+      .closeButton {
+        background-color: pink;
+        padding: 10px;
+        cursor: pointer;
+        float: inline-end;
+        margin-left: 10px;
+        margin-right: 10px;
+      }
+
+      ul {
+        background-color: aqua;
+        list-style-type: none;
+        margin: 10px;
+        padding: 10px;
+      }
+
+      ul li {
+        background-color: green;
+        padding: 10px;
+        border: 2px solid black;
+        margin: 10px;
+        width: 95%;
+        display: inline-block;
+      }
+
+      .modal {
+        position: fixed;
+        background-color: rgba(0, 0, 0, 0.2);
+        z-index: 1;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: none;
+      }
+
+      .modal-content {
+        background-color: orange;
+        margin-top: 20px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 10px;
+        width: 60%;
+        display: flex;
+      }
+
+      .modal input {
+        background-color: burlywood;
+        width: 75%;
+        float: left;
+        padding: 10px;
+      }
+
+      .editAdd {
+        background-color: yellow;
+        color: black;
+        width: 25%;
+        padding: 10px;
+        float: left;
+        cursor: pointer;
+        text-align: center;
+      }
+    </style>
   </head>
   <body>
     <div id="myModal" class="modal">
       <div class="modal-content">
         <input type="text" id="editInput" />
-        <span onclick="edit()" class="editAdd"> Edit</span>
+        <span onclick="edit(a)" class="editAdd">Edit</span>
       </div>
     </div>
 
@@ -21,52 +123,71 @@
       <span onclick="newTask()" class="addButton"> Ekle </span>
     </div>
 
-    <ul id="myList">
-      <li>a</li>
-      <li>b</li>
-      <li>c</li>
-    </ul>
-
+    <ul id="myList"></ul>
     <script>
-      var innerList = document.getElementsByTagName("LI");
+      var innerList = document.getElementById("myList");
       var closeButton = document.getElementsByClassName("closeButton");
       var editButton = document.getElementsByClassName("editButton");
       var divs = document.getElementsByTagName("div");
+      var i;
+      var j;
 
-      var len = innerList.length;
+      function newTask() {
+        var li = document.createElement("li");
+        var taskspan = document.createElement("span");
+        var task = document.getElementById("newInput").value;
+        taskspan.append(task);
 
-      for (i = 0; i < len; i++) {
-        var span = document.createElement("SPAN");
-        span.className = "closeButton";
-        var x = document.createTextNode("X");
-        span.appendChild(x);
-        innerList[i].appendChild(span);
+        li.append(taskspan);
+        if (task === " ") {
+          alert("Lütfen Boş Birakmayiniz!");
+        } else {
+          innerList.appendChild(li);
+        }
+        document.getElementById("newInput").value = " ";
 
-        closeButton[i].onclick = function () {
-          var parentElem = this.parentElement;
-          parentElem.style.display = "none";
-        };
-      }
-
-      for (j = 0; j < len; j++) {
         var spaed = document.createElement("span");
         spaed.className = "editButton";
         var ed = document.createTextNode("Edit");
         spaed.appendChild(ed);
-        innerList[j].appendChild(spaed);
+        li.appendChild(spaed);
 
-        editButton[j].onclick = function () {
-          divs[0].style.display = "block";
-          var li = document.createElement("li")
-          var edited = document.getElementById("editInput").value;
-          li.append(edited);
-          innerList[j].innerHTML = li;
-        };
+        var span = document.createElement("SPAN");
+        span.className = "closeButton";
+        var x = document.createTextNode("X");
+        span.appendChild(x);
+        li.appendChild(span);
+
+        for (i = 0; i < closeButton.length; i++) {
+          closeButton[i].onclick = function () {
+            var parentElem = this.parentElement;
+            parentElem.style.display = "none";
+          };
+        }
+
+        for (j = 0; j < editButton.length; j++) {
+          editButton[j].onclick = function () {
+            divs[0].style.display = "block";
+            var parentElem = this.parentElement;
+            var oldtask = parentElem.children[0];
+            console.log (oldtask);
+
+
+
+          };
+        }
       }
 
-      function edit() {
-        
+      function edit(a) {
+        var nodeList = document.getElementsByTagName("li")
+     
+        var oldtask = parentElem.children[0];
+        var edited = document.getElementById("editInput").value;
+        var edtask = document.createTextNode(edited);
+        oldtask.replaceChild(edtask, oldtask.childNodes[0]);
 
+        document.getElementById("editInput").value = "";
+        divs[0].style.display = "none";
       }
     </script>
   </body>
