@@ -9,70 +9,100 @@
         background-color: white;
         margin: auto;
         max-width: 1000px;
+        background-image: url("assets/img/parc.jpg");
+      }
+
+      .todo {
+        background-color: rgba(0, 0, 0, 0);
+        font-size: 30px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        width: 100%;
+        text-align: center;
       }
 
       .header {
-        background-color: red;
+        background-color: rgb(231, 120, 120);
         color: white;
         padding: 10px;
-        margin: 10px;
+        margin: auto;
         text-align: center;
         display: flex;
+        width: 65%;
+        box-shadow: 5px 5px rgb(170, 88, 88);
       }
 
       .header input {
-        background-color: brown;
+        background-color: rgb(251, 255, 193);
         width: 75%;
         float: left;
         padding: 10px;
+        height: auto;
       }
 
       .addButton {
-        background-color: yellow;
+        background-color: rgb(35, 255, 101);
         color: black;
         width: 25%;
         padding: 10px;
         float: left;
         cursor: pointer;
+        transition: 0.2s;
       }
 
-      .editButton {
-        background-color: blueviolet;
-        float: inline-end;
-        cursor: pointer;
-        padding: 10px;
-        margin-left: 10px;
-        margin-right: 10px;
+      .addButton:hover {
+        background-color: rgb(27, 189, 75);
+        transition: 0.2s;
       }
 
       .closeButton {
-        background-color: pink;
+        background-color: rgb(233, 0, 0);
         padding: 10px;
         cursor: pointer;
         float: inline-end;
-        margin-left: 10px;
-        margin-right: 10px;
       }
 
-      ul {
-        background-color: aqua;
-        list-style-type: none;
-        margin: 10px;
-        padding: 10px;
+      .closeButton:hover {
+        background-color: rgb(139, 0, 0);
       }
 
-      ul li {
-        background-color: green;
+      .editButton {
+        background-color: rgb(255, 230, 0);
+        float: inline-end;
+        cursor: pointer;
         padding: 10px;
-        border: 2px solid black;
+      }
+      .editButton:hover {
+        background-color: rgb(192, 173, 0);
+      }
+
+      ol {
+        background-color: rgba(0, 0, 0, 0);
         margin: 10px;
+        padding: 20px;
+      }
+
+      ol li {
+        background-color: white;
+        padding: 10px;
+        border-bottom: 2px solid black;
         width: 95%;
         display: inline-block;
+        text-align: justify;
+        transition: 0.2s;
+      }
+
+      li span {
+        max-width: 50%;
+      }
+
+      li:nth-child(even) {
+        background-color: lightgray;
       }
 
       .modal {
         position: fixed;
-        background-color: rgba(0, 0, 0, 0.2);
+        background-color: rgba(0, 0, 0, 0.75);
         z-index: 1;
         top: 0;
         left: 0;
@@ -83,7 +113,7 @@
 
       .modal-content {
         background-color: orange;
-        margin-top: 20px;
+        margin-top: 5%;
         margin-left: auto;
         margin-right: auto;
         padding: 10px;
@@ -107,30 +137,42 @@
         cursor: pointer;
         text-align: center;
       }
+
+      .editAdd:hover {
+        background-color: rgb(210, 210, 0);
+      }
     </style>
   </head>
   <body>
     <div id="myModal" class="modal">
       <div class="modal-content">
         <input type="text" id="editInput" />
-        <span onclick="edit(a)" class="editAdd">Edit</span>
+        <span onclick="edit()" class="editAdd">Edit</span>
       </div>
     </div>
 
+    <div class="todo">-TO DO LIST-</div>
+
     <div class="header">
+      <br />
       <input type="text" id="newInput" />
 
-      <span onclick="newTask()" class="addButton"> Ekle </span>
+      <span onclick="newTask()" class="addButton"> ADD </span>
     </div>
 
-    <ul id="myList"></ul>
+    <ol id="myList"></ol>
     <script>
       var innerList = document.getElementById("myList");
       var closeButton = document.getElementsByClassName("closeButton");
       var editButton = document.getElementsByClassName("editButton");
       var divs = document.getElementsByTagName("div");
+      var num = document.getElementsByClassName("num");
+      var len = document.getElementById("myList").length;
+      var myArray;
       var i;
       var j;
+      var c;
+      var k;
 
       function newTask() {
         var li = document.createElement("li");
@@ -146,17 +188,17 @@
         }
         document.getElementById("newInput").value = " ";
 
-        var spaed = document.createElement("span");
-        spaed.className = "editButton";
-        var ed = document.createTextNode("Edit");
-        spaed.appendChild(ed);
-        li.appendChild(spaed);
-
         var span = document.createElement("SPAN");
         span.className = "closeButton";
         var x = document.createTextNode("X");
         span.appendChild(x);
         li.appendChild(span);
+
+        var spaed = document.createElement("span");
+        spaed.className = "editButton";
+        var ed = document.createTextNode("Edit");
+        spaed.appendChild(ed);
+        li.appendChild(spaed);
 
         for (i = 0; i < closeButton.length; i++) {
           closeButton[i].onclick = function () {
@@ -169,25 +211,40 @@
           editButton[j].onclick = function () {
             divs[0].style.display = "block";
             var parentElem = this.parentElement;
-            var oldtask = parentElem.children[0];
-            console.log (oldtask);
-
-
-
+            var oldtaskspan = parentElem.children[0];
+            var oldtask = oldtaskspan.textContent;
+            document.getElementById("editInput").value = oldtask;
+            var c = parentElem.children[3].textContent;
+            myArray = [c, oldtask];
           };
+        }
+
+        for (k = 0; k < editButton.length; k++) {
+          if (k + 1 === editButton.length) {
+            var sp = document.createElement("span");
+            var txt = document.createTextNode(k);
+            sp.append(txt);
+            sp.style.display = "none";
+            li.appendChild(sp);
+          }
         }
       }
 
-      function edit(a) {
-        var nodeList = document.getElementsByTagName("li")
-     
+      function edit() {
+        var x = myArray[0];
+        var txt = myArray[1];
+        var nodeList = document.getElementsByTagName("li");
+        var parentElem = nodeList[x];
         var oldtask = parentElem.children[0];
         var edited = document.getElementById("editInput").value;
+        var editspan = document.createElement("span");
+        editspan.append(edited);
         var edtask = document.createTextNode(edited);
         oldtask.replaceChild(edtask, oldtask.childNodes[0]);
-
         document.getElementById("editInput").value = "";
         divs[0].style.display = "none";
+        myArray.pop();
+        myArray.pop();
       }
     </script>
   </body>
