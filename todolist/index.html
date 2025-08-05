@@ -72,6 +72,7 @@
         cursor: pointer;
         padding: 10px;
       }
+
       .editButton:hover {
         background-color: rgb(192, 173, 0);
       }
@@ -90,14 +91,6 @@
         display: inline-block;
         text-align: justify;
         transition: 0.2s;
-      }
-
-      li span {
-        max-width: 50%;
-      }
-
-      li:nth-child(even) {
-        background-color: lightgray;
       }
 
       .modal {
@@ -143,11 +136,11 @@
       }
     </style>
   </head>
-  <body>
+  <body onload="getList()">
     <div id="myModal" class="modal">
       <div class="modal-content">
         <input type="text" id="editInput" />
-        <span onclick="edit()" class="editAdd">Edit</span>
+        <span onclick="edit()" class="editAdd" id="editid">Edit</span>
       </div>
     </div>
 
@@ -156,8 +149,7 @@
     <div class="header">
       <br />
       <input type="text" id="newInput" />
-
-      <span onclick="newTask()" class="addButton"> ADD </span>
+      <span onclick="newTask()" class="addButton" id="addid"> ADD </span>
     </div>
 
     <ol id="myList"></ol>
@@ -169,17 +161,60 @@
       var num = document.getElementsByClassName("num");
       var len = document.getElementById("myList").length;
       var myArray;
+      var finArr = new Array();
+      var sl = new Array();
       var i;
       var j;
       var c;
       var k;
+      var s;
+
+      var inp = document.getElementById("newInput");
+      inp.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          document.getElementById("addid").click();
+        }
+      });
+
+      var inpu = document.getElementById("editInput");
+      inpu.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          document.getElementById("editid").click();
+        }
+      });
+
+      var modal = document.getElementById("myModal");
+      window.onclick = function (event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      };
+
+      var jsn = localStorage.getItem("storedList");
+      sl = JSON.parse(jsn);
+
+      function getList() {
+        document.getElementById("newInput").focus();
+        if (sl.length > 0) {
+          for (s = 0; s < sl.length; s++) {
+            var li = document.createElement("li");
+            var lispan = document.createElement("span");
+            var text = sl[s];
+            lispan.append(text);
+            li.append(lispan);
+            innerList.append(li);
+            buttons(li);
+          }
+        }
+      }
 
       function newTask() {
         var li = document.createElement("li");
         var taskspan = document.createElement("span");
         var task = document.getElementById("newInput").value;
         taskspan.append(task);
-
         li.append(taskspan);
         if (task === " ") {
           alert("Lütfen Boş Birakmayiniz!");
@@ -187,47 +222,8 @@
           innerList.appendChild(li);
         }
         document.getElementById("newInput").value = " ";
-
-        var span = document.createElement("SPAN");
-        span.className = "closeButton";
-        var x = document.createTextNode("X");
-        span.appendChild(x);
-        li.appendChild(span);
-
-        var spaed = document.createElement("span");
-        spaed.className = "editButton";
-        var ed = document.createTextNode("Edit");
-        spaed.appendChild(ed);
-        li.appendChild(spaed);
-
-        for (i = 0; i < closeButton.length; i++) {
-          closeButton[i].onclick = function () {
-            var parentElem = this.parentElement;
-            parentElem.style.display = "none";
-          };
-        }
-
-        for (j = 0; j < editButton.length; j++) {
-          editButton[j].onclick = function () {
-            divs[0].style.display = "block";
-            var parentElem = this.parentElement;
-            var oldtaskspan = parentElem.children[0];
-            var oldtask = oldtaskspan.textContent;
-            document.getElementById("editInput").value = oldtask;
-            var c = parentElem.children[3].textContent;
-            myArray = [c, oldtask];
-          };
-        }
-
-        for (k = 0; k < editButton.length; k++) {
-          if (k + 1 === editButton.length) {
-            var sp = document.createElement("span");
-            var txt = document.createTextNode(k);
-            sp.append(txt);
-            sp.style.display = "none";
-            li.appendChild(sp);
-          }
-        }
+        buttons(li);
+        updateList();
       }
 
       function edit() {
@@ -245,6 +241,73 @@
         divs[0].style.display = "none";
         myArray.pop();
         myArray.pop();
+        updateList();
+        document.getElementById("newInput").focus();
+      }
+
+      function updateList() {
+        var b = 0;
+        while (finArr.length > 0) {
+          finArr.pop();
+        }
+        var inl = document.getElementsByTagName("li");
+        for (s = 0; s < inl.length; s++) {
+          var parentElem = inl[s];
+          if (parentElem.style.display === "none") {
+            continue;
+          } else {
+            var i = parentElem.children[0].textContent;
+            finArr[b] = i;
+            b++;
+          }
+        }
+        localStorage.setItem("storedList", JSON.stringify(finArr));
+        console.log(finArr);
+      }
+
+      function buttons(li) {
+        var span = document.createElement("SPAN");
+        span.className = "closeButton";
+        var x = document.createTextNode("X");
+        span.appendChild(x);
+        li.appendChild(span);
+
+        var spaed = document.createElement("span");
+        spaed.className = "editButton";
+        var ed = document.createTextNode("Edit");
+        spaed.appendChild(ed);
+        li.appendChild(spaed);
+
+        for (i = 0; i < closeButton.length; i++) {
+          closeButton[i].onclick = function () {
+            var parentElem = this.parentElement;
+            var li = document.getElementsByTagName("li");
+            parentElem.style.display = "none";
+            updateList();
+          };
+        }
+
+        for (j = 0; j < editButton.length; j++) {
+          if (j + 1 === closeButton.length) {
+            var sp = document.createElement("span");
+            var txt = document.createTextNode(j);
+            sp.append(txt);
+            sp.style.display = "none";
+            li.appendChild(sp);
+          }
+
+          editButton[j].onclick = function () {
+            divs[0].style.display = "block";
+            var parentElem = this.parentElement;
+            var thelist = parentElem.parentElement;
+            var oldtaskspan = parentElem.children[0];
+            var oldtask = oldtaskspan.textContent;
+            document.getElementById("editInput").value = oldtask;
+            document.getElementById("editInput").focus();
+            var c = parentElem.children[3].textContent;
+            myArray = [c, oldtask];
+          };
+        }
       }
     </script>
   </body>
