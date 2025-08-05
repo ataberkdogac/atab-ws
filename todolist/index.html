@@ -192,10 +192,11 @@
         }
       };
 
-      var jsn = localStorage.getItem("storedList");
-      sl = JSON.parse(jsn);
+      
 
       function getList() {
+        var jsn = localStorage.getItem("storedList");
+        sl = JSON.parse(jsn);
         document.getElementById("newInput").focus();
         if (sl.length > 0) {
           for (s = 0; s < sl.length; s++) {
@@ -238,10 +239,11 @@
         var edtask = document.createTextNode(edited);
         oldtask.replaceChild(edtask, oldtask.childNodes[0]);
         document.getElementById("editInput").value = "";
+        updateList();
         divs[0].style.display = "none";
         myArray.pop();
         myArray.pop();
-        updateList();
+        
         document.getElementById("newInput").focus();
       }
 
@@ -280,10 +282,14 @@
 
         for (i = 0; i < closeButton.length; i++) {
           closeButton[i].onclick = function () {
-            var parentElem = this.parentElement;
-            var li = document.getElementsByTagName("li");
-            parentElem.style.display = "none";
             updateList();
+            var parentElem = this.parentElement;
+            var li = document.getElementById("myList");
+            li.removeChild(parentElem);
+            updateList();
+            clear();
+            getList();
+            
           };
         }
 
@@ -307,6 +313,14 @@
             var c = parentElem.children[3].textContent;
             myArray = [c, oldtask];
           };
+        }
+      }
+
+      function clear(){
+        var list = document.getElementById("myList");
+        var a;
+        while (list.hasChildNodes()){
+          list.removeChild(list.firstChild);
         }
       }
     </script>
